@@ -1,0 +1,15 @@
+extends ../layout
+
+block content
+	h2 Edit Document
+	form(method='post', action=`/documents?_method=PUT`)
+		input(name='id', value=doc.id, type='hidden')
+		div
+			label Title:
+			input(name='title', value=doc.title || '')
+		div
+			label Note:
+			textarea(name='data')
+				=doc.data || ''
+		div
+			input(type='submit', value='Save')

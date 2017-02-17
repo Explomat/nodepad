@@ -1,0 +1,38 @@
+body {
+	padding: 50px;
+	font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+	color: #00B7FF;
+}
+
+.documents {
+	margin-bottom: 16px;
+	list-style: none;
+}
+
+.button-delete-container {
+	display: inline;
+}
+
+.button {
+	text-decoration: none;
+    color: #444;
+    background-color: #ccc;
+    padding: 4px;
+    border-radius: 4px;
+    box-shadow: 0 0 3px rgba(0,0,0,0.5);
+    border: none;
+    cursor: pointer;
+}
+
+.button--new {
+	margin-bottom: 16px;
+	display: inline-block;
+}
+
+.button--destroy {
+	margin-left: 8px;
+	margin-right: 16px;
+}
