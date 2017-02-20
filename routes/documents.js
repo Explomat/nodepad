@@ -1,34 +1,45 @@
-var express = require('express');
-var router = express.Router();
-var mongoose = require('mongoose');
-var Document = require('../models/document');
+var express = require('express'),
+	router = express.Router(),
+	mongoose = require('mongoose'),
+	Document = require('../models/document'),
+	loadUser = require('./auth').loadUser;
 
 // :format может быть json или html
-router.get('/', (req, res) => {
-	console.log(req.session);
-	Document.find({}, function(err, documents) {
+router.get('/', loadUser, (req, res) => {
+	//console.log(res);
+	var userId = req.session.currentUser._id;
+	Document.find({userId: userId}, (err, documents) => {
 		//console.log(documents);
 		res.render('documents/index', {
-			documents
+			documents,
+			userId
 		});
 	});
 });
 
 router.get('/new', (req, res) => {
+	var userId = req.session.currentUser._id;
 	res.render('documents/new', {
-		doc: new Document()
+		doc: new Document(),
+		userId
 	});
 });
 
 router.post('/new', (req, res) => {
 	var doc = new Document(req.body);
-	doc.save(() => {
-		res.redirect('/documents');
+	doc.save(err => {
+		if (err){
+			res.send(err);
+		}
+		else {
+			res.redirect('/documents');
+		}
 	});
 });
 
 router.get('/edit/:id', (req, res) => {
-	Document.findById(req.params.id, (err, doc) => {
+	var userId = req.session.currentUser._id;
+	Document.findOne({ _id: req.params.id, userId: userId }, (err, doc) => {
 		if (err){
 			res.send('Документ не найден');
 		}
@@ -41,7 +52,8 @@ router.get('/edit/:id', (req, res) => {
 });
 
 router.put('/', (req, res) => {
-	Document.findById(req.body.id, (err, d) => {
+	var userId = req.session.currentUser._id;
+	Document.findOne({ _id: req.body.id, userId: userId }, (err, d) => {
 		if (err){
 			res.send(err);
 		}
@@ -58,7 +70,8 @@ router.put('/', (req, res) => {
 });
 
 router.delete('/', (req, res) => {
-	Document.findById(req.body.id, (err, d) => {
+	var userId = req.session.currentUser._id;
+	Document.findOne({ _id: req.body.id, userId: userId }, (err, d) => {
 		if (err){
 			res.send(err);
 		}
@@ -74,10 +87,11 @@ router.delete('/', (req, res) => {
 	});
 });
 
-router.get('/:id', (req, res) => {
-	Document.findById(req.params.id, (err, doc) => {
+router.get('/:id', (req, res, next) => {
+	var userId = req.session.currentUser._id;
+	Document.findById({ _id: req.params.id, userId: userId }, (err, doc) => {
 		if (err){
-			res.send('Документ не найден');
+			return next('Документ не найден');
 		}
 		else {
 			res.render('documents/view', {

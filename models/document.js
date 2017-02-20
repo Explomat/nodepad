@@ -1,5 +1,5 @@
 var mongoose = require('mongoose'),
-	Schema = mongoose.Schema
+	Schema = mongoose.Schema;
 
 var Document = new Schema({
 	title: {
@@ -13,6 +13,10 @@ var Document = new Schema({
 	tags: {
 		type: String,
 		index: true
+	},
+	userId: {
+		type: Schema.ObjectId,
+		required: true
 	}
 });
 

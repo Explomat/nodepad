@@ -3,6 +3,7 @@ extends ../layout
 block content
 	h2 New Document
 	form(method='post', action='/documents/new')
+		input(name='userId', value=userId, type='hidden')
 		div
 			label Title:
 			input(name='title', value=doc.title || '')

@@ -14,6 +14,7 @@ var express = require('express'),
 	index = require('./routes/index'),
 	users = require('./routes/users'),
 	documents = require('./routes/documents'),
+	sessions = require('./routes/sessions');
 
 	debug = require('debug')('nodepad');
 	env = app.get('env').trim();
@@ -44,9 +45,14 @@ if ('development' === env) {
 	app.use(errorHandler());
 }
 
+app.use((req, res, next) => {
+	res.locals.user = req.session.currentUser;
+	next();
+});
 app.use('/', index);
 app.use('/users', users);
 app.use('/documents', documents);
+app.use('/sessions', sessions);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

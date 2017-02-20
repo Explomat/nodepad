@@ -1,6 +1,6 @@
 extends ../layout
 
-block content
+block content	
 	h1 Your Documents
 	p
 		a(class='button button--new', href='/documents/new') + New Document
@@ -10,6 +10,7 @@ block content
 			li(class='documents')
 				a(class='button', href=`/documents/edit/${d.id}`) Edit
 				form(method='post', action=`/documents?_method=DELETE`, class='button-delete-container')
+					input(name='userId', value=userId, type='hidden')
 					input(name='id', value=d.id, type='hidden')
 					input(type='submit', class='button button--destroy', value='Delete')
 				a(href=`/documents/${d.id}`)

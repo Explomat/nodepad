@@ -3,15 +3,11 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
 var User = new Schema({
-    username: {
-        type: String,
-        unique: true,
-        required: true
-    },
     email: {
     	type: String,
+    	index: true,
         unique: true,
-        required: true	
+        required: true
     },
     hashedPassword: {
         type: String,
@@ -23,12 +19,12 @@ var User = new Schema({
     }
 });
 
-User.methods.encryptPassword = password => {
-    return crypto.createHmac('sha1', this.salt).update(password).digest('hex');
+User.methods.encryptPassword = function(password) {
+	return crypto.createHmac('sha1', this.salt).update(password).digest('hex');
 };
 
 User.virtual('password')
-    .set(password => {
+    .set(function(password) {
         this._plainPassword = password;
         this.salt = Math.round((new Date().valueOf() * Math.random())) + '';
         this.hashedPassword = this.encryptPassword(password);
@@ -37,7 +33,7 @@ User.virtual('password')
         return this._plainPassword;
     });
 
-User.methods.checkPassword = password => {
+User.methods.checkPassword = function(password) {
     return this.encryptPassword(password) === this.hashedPassword;
 };
 

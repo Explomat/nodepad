@@ -1,7 +1,13 @@
 doctype html
 html
-  head
-    title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
-  body
-    block content
+	head
+		title= title
+		link(rel='stylesheet', href='/stylesheets/style.css')
+	body
+	- if (user)
+		form(method='post', action=`/sessions?_method=DELETE`)
+			p #{user.email}
+			input(type='submit' value='Logout')
+	- else
+		a(href='/sessions/new') Login
+	block content

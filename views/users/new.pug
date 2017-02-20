@@ -1,0 +1,15 @@
+.page
+	h2 Register
+
+	form.users(method='post', action='/users')
+		div
+			label Email:
+			input(name='email', value=user.email || '')
+				
+		div
+			label Password:
+			input(name='password', value=user.password || '', type='password')
+		div
+			input(type='submit', value='Register')
+			span \ or 
+				a(href='/sessions/new') Log In
