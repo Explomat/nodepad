@@ -49,6 +49,16 @@ app.use((req, res, next) => {
 	res.locals.user = req.session.currentUser;
 	next();
 });
+
+function NotFound(msg) {
+  this.name = 'NotFound';
+  Error.call(this, msg);
+  Error.captureStackTrace(this, arguments.callee);
+}
+
+sys.inherits(NotFound, Error);
+
+
 app.use('/', index);
 app.use('/users', users);
 app.use('/documents', documents);

@@ -5,7 +5,7 @@ var express = require('express'),
 	loadUser = require('./auth').loadUser;
 
 // :format может быть json или html
-router.get('/', loadUser, (req, res) => {
+router.get('/', loadUser, (req, res, next) => {
 	//console.log(res);
 	var userId = req.session.currentUser._id;
 	Document.find({userId: userId}, (err, documents) => {
