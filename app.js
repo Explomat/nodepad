@@ -1,6 +1,7 @@
 var express = require('express'),
 	app = express(),
 	session = require('express-session'),
+	flash = require('express-flash'),
 	MongoStore = require('connect-mongo')(session),
 	path = require('path'),
 	favicon = require('serve-favicon'),
@@ -36,6 +37,7 @@ app.use(session({
     store: new MongoStore({ mongooseConnection: mongoose.connection })
 }));
 
+app.use(flash());
 app.use(methodOverride('_method'));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -49,15 +51,6 @@ app.use((req, res, next) => {
 	res.locals.user = req.session.currentUser;
 	next();
 });
-
-function NotFound(msg) {
-  this.name = 'NotFound';
-  Error.call(this, msg);
-  Error.captureStackTrace(this, arguments.callee);
-}
-
-sys.inherits(NotFound, Error);
-
 
 app.use('/', index);
 app.use('/users', users);

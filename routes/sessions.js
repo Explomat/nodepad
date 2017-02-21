@@ -12,12 +12,16 @@ router.get('/new', (req, res) => {
 
 router.post('/', (req, res) => {
 	User.findOne({ email: req.body.email }, (err, user) => {
-		if (user){
+		if (user && user.authenticate(req.body.password)){
 			req.session.currentUser = user;
 			res.redirect('/documents');
 		}
 		else {
-			res.send('Not found!');
+			req.flash('failure', 'Incorrect credentials');
+			res.render('sessions/new', {
+				user: req.body,
+				flash: req.flash('failure')
+			});
 		}
 	});
 });

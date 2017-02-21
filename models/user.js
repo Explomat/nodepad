@@ -23,6 +23,10 @@ User.methods.encryptPassword = function(password) {
 	return crypto.createHmac('sha1', this.salt).update(password).digest('hex');
 };
 
+User.methods.authenticate = function(password){
+	return this.encryptPassword(password) === this.hashedPassword;
+};
+
 User.virtual('password')
     .set(function(password) {
         this._plainPassword = password;
@@ -32,9 +36,5 @@ User.virtual('password')
     .get(() => {
         return this._plainPassword;
     });
-
-User.methods.checkPassword = function(password) {
-    return this.encryptPassword(password) === this.hashedPassword;
-};
 
 module.exports = mongoose.model('User', User);
