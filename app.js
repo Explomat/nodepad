@@ -1,7 +1,7 @@
 var express = require('express'),
 	app = express(),
 	session = require('express-session'),
-	flash = require('express-flash'),
+	flash = require('connect-flash'),
 	MongoStore = require('connect-mongo')(session),
 	path = require('path'),
 	favicon = require('serve-favicon'),
@@ -31,6 +31,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(session({
+	cookie: { maxAge: 6000 },
     secret: 'foo',
     saveUninitialized: false, // don't create session until something stored 
     resave: false, //don't save session if unmodified 
@@ -49,6 +50,7 @@ if ('development' === env) {
 
 app.use((req, res, next) => {
 	res.locals.user = req.session.currentUser;
+	console.log('user: ', res.locals.user);
 	next();
 });
 

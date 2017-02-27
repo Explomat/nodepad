@@ -3,8 +3,7 @@
 	p
 		a.button(href='/users/new') Create an account &rarr;
 	- if (flash)
-		p
-			=flash
+		p #{flash}
 	form.users#login(method='post', action='/sessions')
 		div
 			label Email:
