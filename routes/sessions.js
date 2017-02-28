@@ -23,7 +23,7 @@ router.post('/', (req, res) => {
 				var loginToken = new LoginToken({ email: user.email });
 				loginToken.save(function(err) {
 					res.cookie('logintoken', loginToken, {
-						expires: new Date(Date.now() + 2 * 60000), // 2 недели
+						expires: new Date(Date.now() + 10 * 60000), // 2 недели
 						path: '/'
 					});
 					res.redirect('/documents');

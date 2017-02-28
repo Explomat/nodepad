@@ -78,8 +78,6 @@ app.use((req, res, next) => {
 				User.findOne({ email: t.email }, function(err, user){
 					if (user){
 						req.currentUser = user;
-						delete req.currentUser.hashedPassword; 
-						req.session.user_id = user.id;
 						res.locals.user = user;
 					}
 					next();

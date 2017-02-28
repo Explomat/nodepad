@@ -24,7 +24,7 @@ function authenticateFromLoginToken(req, res, next) {
 				t.token = t.randomToken();
 				t.save(function(){
 					res.cookie('logintoken', t, {
-						expires: new Date(Date.now() + 2 * 6000),
+						expires: new Date(Date.now() + 10 * 6000),
 						path: '/' });
 					next();
 				});
