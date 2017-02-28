@@ -7,7 +7,7 @@ var express = require('express'),
 // :format может быть json или html
 router.get('/', loadUser, (req, res, next) => {
 	//console.log(res);
-	var userId = req.session.currentUser._id;
+	var userId = req.currentUser._id;
 	Document.find({userId: userId}, (err, documents) => {
 		//console.log(documents);
 		res.render('documents/index', {
@@ -18,7 +18,7 @@ router.get('/', loadUser, (req, res, next) => {
 });
 
 router.get('/new', (req, res) => {
-	var userId = req.session.currentUser._id;
+	var userId = req.currentUser._id;
 	res.render('documents/new', {
 		doc: new Document(),
 		userId
@@ -38,7 +38,7 @@ router.post('/new', (req, res) => {
 });
 
 router.get('/edit/:id', (req, res) => {
-	var userId = req.session.currentUser._id;
+	var userId = req.currentUser._id;
 	Document.findOne({ _id: req.params.id, userId: userId }, (err, doc) => {
 		if (err){
 			res.send('Документ не найден');
@@ -52,7 +52,7 @@ router.get('/edit/:id', (req, res) => {
 });
 
 router.put('/', (req, res) => {
-	var userId = req.session.currentUser._id;
+	var userId = req.currentUser._id;
 	Document.findOne({ _id: req.body.id, userId: userId }, (err, d) => {
 		if (err){
 			res.send(err);
@@ -70,7 +70,7 @@ router.put('/', (req, res) => {
 });
 
 router.delete('/', (req, res) => {
-	var userId = req.session.currentUser._id;
+	var userId = req.currentUser._id;
 	Document.findOne({ _id: req.body.id, userId: userId }, (err, d) => {
 		if (err){
 			res.send(err);
@@ -88,7 +88,7 @@ router.delete('/', (req, res) => {
 });
 
 router.get('/:id', (req, res, next) => {
-	var userId = req.session.currentUser._id;
+	var userId = req.currentUser._id;
 	Document.findById({ _id: req.params.id, userId: userId }, (err, doc) => {
 		if (err){
 			return next('Документ не найден');

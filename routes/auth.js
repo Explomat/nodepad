@@ -18,7 +18,8 @@ function authenticateFromLoginToken(req, res, next) {
 		
 		User.findOne({ email: t.email }, function(err, user){
 			if (user){
-				req.session.currentUser = user;
+				req.session.user_id  = user.id;
+				req.currentUser = user;
 				
 				t.token = t.randomToken();
 				t.save(function(){
@@ -35,9 +36,10 @@ function authenticateFromLoginToken(req, res, next) {
 }
 
 function loadUser(req, res, next) {
-	if (req.session.currentUser){
-		User.findById(req.session.currentUser._id, (err, user) => {
+	if (req.session.user_id){
+		User.findById(req.session.user_id, (err, user) => {
 			if (user) {
+				req.currentUser = user;
 				next();
 			} else {
 				res.redirect('/sessions/new');

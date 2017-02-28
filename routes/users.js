@@ -14,7 +14,8 @@ router.post('/', (req, res) => {
 			res.send(err);
 		}
 		else {
-			req.session.currentUser = user;
+			req.session.user_id = user.id;
+			//req.currentUser = user;
 			res.redirect('/documents');
 		}
 	}, () => {

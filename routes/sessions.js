@@ -15,19 +15,18 @@ router.get('/new', (req, res) => {
 router.post('/', (req, res) => {
 	User.findOne({ email: req.body.email }, (err, user) => {
 		if (user && user.authenticate(req.body.password)){
-			req.session.currentUser = user;
+			req.session.user_id = user.id;
+			req.currentUser = user;
 			
 			// запомнить меня
 			if (req.body.remember_me) {
-				LoginToken.remove({ email: user.email }, function(err) {
-					var loginToken = new LoginToken({ email: user.email });
-					loginToken.save(function(err) {
-						res.cookie('logintoken', loginToken, {
-							expires: new Date(Date.now() + 2 * 60000), // 2 недели
-							path: '/'
-						});
-						res.redirect('/documents');
+				var loginToken = new LoginToken({ email: user.email });
+				loginToken.save(function(err) {
+					res.cookie('logintoken', loginToken, {
+						expires: new Date(Date.now() + 2 * 60000), // 2 недели
+						path: '/'
 					});
+					res.redirect('/documents');
 				});
 			}
 			else {

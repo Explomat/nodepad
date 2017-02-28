@@ -15,9 +15,11 @@ var express = require('express'),
 	index = require('./routes/index'),
 	users = require('./routes/users'),
 	documents = require('./routes/documents'),
-	sessions = require('./routes/sessions');
-
-	debug = require('debug')('nodepad');
+	sessions = require('./routes/sessions'),
+	
+	User = require('./models/user'),
+	
+	debug = require('debug')('nodepad'),
 	env = app.get('env').trim();
 
 // view engine setup
@@ -49,9 +51,23 @@ if ('development' === env) {
 }
 
 app.use((req, res, next) => {
-	res.locals.user = req.session.currentUser;
-	console.log('user: ', res.locals.user);
-	next();
+	//res.locals.user = req.currentUser;
+	console.log('user: ', req.currentUser);
+	
+	if (req.session && req.session.user_id){
+		User.findById(req.session.user_id, function(err, user){
+			if (user){
+				req.currentUser = user;
+				delete req.currentUser.password; 
+				req.session.user_id = user.id;
+				res.locals.user = user;
+			}
+			next();
+		});
+	}
+	else {
+		next();
+	}
 });
 
 app.use('/', index);
