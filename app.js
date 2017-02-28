@@ -18,6 +18,7 @@ var express = require('express'),
 	sessions = require('./routes/sessions'),
 	
 	User = require('./models/user'),
+	LoginToken = require('./models/loginToken'),
 	
 	debug = require('debug')('nodepad'),
 	env = app.get('env').trim();
@@ -51,18 +52,39 @@ if ('development' === env) {
 }
 
 app.use((req, res, next) => {
-	//res.locals.user = req.currentUser;
-	console.log('user: ', req.currentUser);
-	
 	if (req.session && req.session.user_id){
 		User.findById(req.session.user_id, function(err, user){
 			if (user){
 				req.currentUser = user;
-				delete req.currentUser.password; 
+				delete req.currentUser.hashedPassword; 
 				req.session.user_id = user.id;
 				res.locals.user = user;
 			}
 			next();
+		});
+	}
+	else if (req.cookies.logintoken) {
+		var cookie = req.cookies.logintoken;
+		LoginToken.findOne(
+		{
+			email: cookie.email,
+	        series: cookie.series,
+	        token: cookie.token
+	    }, function(err, t) {
+	    	if (!t) {
+				next();
+			}
+			else {
+				User.findOne({ email: t.email }, function(err, user){
+					if (user){
+						req.currentUser = user;
+						delete req.currentUser.hashedPassword; 
+						req.session.user_id = user.id;
+						res.locals.user = user;
+					}
+					next();
+				});
+			}
 		});
 	}
 	else {
